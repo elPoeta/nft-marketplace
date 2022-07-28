@@ -46,6 +46,7 @@ export const MarketProvider = ({ children }: Props) => {
       console.log(error);
       web3ModalRef.current?.clearCachedProvider();
       setIsConnected(false);
+      setSigner(undefined);
     });
   };
 
@@ -56,7 +57,7 @@ export const MarketProvider = ({ children }: Props) => {
     const provider = new ethers.providers.Web3Provider(proxy);
     const accounts =  await provider.listAccounts();
     setIsConnected(true); 
-    setSigner(accounts[0]);
+    setSigner(accounts[0] || undefined);
     setWeb3Provider(provider);
     providerEvents(web3ModalRef, proxy)
   }
@@ -66,7 +67,7 @@ export const MarketProvider = ({ children }: Props) => {
       const { signer, provider, Web3Provider } = await getSignerAndProvider(web3ModalRef);
       const accounts = await signer.provider.listAccounts();
       setIsConnected(true)
-      setSigner(accounts[0]);
+      setSigner(accounts[0] || undefined);
       setWeb3Provider(web3Provider);
       providerEvents(web3ModalRef, provider);
     } catch (error) {
@@ -88,7 +89,11 @@ export const MarketProvider = ({ children }: Props) => {
         const { ethereum } = window;
         const marketContract = await getMarketContract(ethereum);
         const nftContract = await getNFTContract(ethereum);
-        setInitialState({ marketContract, nftContract });
+        if(!marketContract || !nftContract) {
+          alert('Please connect your wallet!');
+        } else {
+          setInitialState({ marketContract, nftContract });
+        }
       } else {
           alert('Please install Metamask!');
       }

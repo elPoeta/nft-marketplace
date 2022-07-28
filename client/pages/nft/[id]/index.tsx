@@ -19,6 +19,7 @@ const NFTItem:NextPage = () => {
   useEffect(() => {
     if(!marketContract) return;
     if(!nftContract) return;
+    if(!signer) return;
     (async () => {    
       const item = await marketContract.getItemById(parseInt(id as string))
       const newItem = await generateItem(item, nftContract);
@@ -43,7 +44,7 @@ const NFTItem:NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {
-        !nft ? (<Loader className='w-[500px] h-[500px] mx-auto my-0 py-5' size={500} />)  :
+        !signer ? <h2 className="text-2xl">Please conect your wallet</h2> :  !nft ? (<Loader className='w-[500px] h-[500px] mx-auto my-0 py-5' size={500} />)  :
         (
         <section className="w-[70%] mx-auto my-0 grid grid-cols-[400px_1fr] items-center justify-center">
            <div className="w-[400px] h-[400px]">
